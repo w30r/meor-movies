@@ -1,6 +1,6 @@
-const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
-const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-const SERVER_BASE_URL = process.env.REACT_APP_SERVER_BASE_URL;
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
 export async function likeAMovie(movieId, username) {
   const res = await fetch(`${SERVER_BASE_URL}/like`, {
