@@ -2,6 +2,7 @@ const API_KEY = "2a69af83e643fe243bc21a1cf7e652fc";
 const BASE_URL = "https://api.themoviedb.org/3";
 const SERVER_BASE_URL = "https://845c-118-101-171-17.ngrok-free.app";
 
+
 export async function likeAMovie(movieId, username) {
   const res = await fetch(`${SERVER_BASE_URL}/like`, {
     method: "POST",
