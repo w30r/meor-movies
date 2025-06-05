@@ -150,12 +150,38 @@ function SwipeStart() {
                 {movies[movieindex].title} (
                 {movies[movieindex].release_date?.slice(0, 4)})
               </p>
+              {/* Genre badges with unique colors */}
               <div className="flex flex-wrap gap-2 justify-center my-2">
-                {movies[movieindex].genre_ids && movies[movieindex].genre_ids.map((gid) => (
-                  <span key={gid} className="inline-block bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full text-xs font-semibold shadow">
-                    {genreMap[gid] || gid}
-                  </span>
-                ))}
+                {movies[movieindex].genre_ids && movies[movieindex].genre_ids.map((gid) => {
+                  const genreName = genreMap[gid];
+                  const genreColors = {
+                    "Action":      'bg-red-200 text-red-800',
+                    "Adventure":   'bg-green-200 text-green-800',
+                    "Animation":   'bg-yellow-200 text-yellow-800',
+                    "Comedy":      'bg-pink-200 text-pink-800',
+                    "Crime":       'bg-gray-300 text-gray-800',
+                    "Documentary": 'bg-blue-100 text-blue-900',
+                    "Drama":       'bg-purple-200 text-purple-800',
+                    "Family":      'bg-teal-200 text-teal-800',
+                    "Fantasy":     'bg-indigo-200 text-indigo-800',
+                    "History":     'bg-orange-200 text-orange-800',
+                    "Horror":      'bg-black text-white',
+                    "Music":       'bg-fuchsia-200 text-fuchsia-800',
+                    "Mystery":     'bg-slate-200 text-slate-800',
+                    "Romance":     'bg-rose-200 text-rose-800',
+                    "Science Fiction": 'bg-cyan-200 text-cyan-800',
+                    "TV Movie":   'bg-lime-200 text-lime-800',
+                    "Thriller":    'bg-amber-200 text-amber-800',
+                    "War":         'bg-zinc-200 text-zinc-800',
+                    "Western":     'bg-yellow-900 text-yellow-100',
+                  };
+                  const colorClass = genreColors[genreName] || 'bg-blue-200 text-blue-800';
+                  return (
+                    <span key={gid} className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold shadow ${colorClass}`}>
+                      {genreName}
+                    </span>
+                  );
+                })}
               </div>
               <p className="font-bold text-center">
                 Score: {Math.round(movies[movieindex].vote_average * 10) / 10}
