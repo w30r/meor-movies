@@ -187,6 +187,41 @@ function SwipeStart() {
                 Score: {Math.round(movies[movieindex].vote_average * 10) / 10}
                 /10
               </p>
+              {/* Star rating display */}
+              <div className="flex justify-center items-center mb-2">
+                {(() => {
+                  const score = movies[movieindex].vote_average;
+                  const fullStars = Math.floor(score / 2);
+                  const halfStar = score % 2 >= 1 ? 1 : 0;
+                  const emptyStars = 5 - fullStars - halfStar;
+                  const stars = [];
+                  for (let i = 0; i < fullStars; i++) {
+                    stars.push(
+                      <svg key={"full"+i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.05 9.397c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.97z"/></svg>
+                    );
+                  }
+                  if (halfStar) {
+                    stars.push(
+                      <svg key="half" className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <defs>
+                          <linearGradient id="half-grad">
+                            <stop offset="50%" stopColor="currentColor"/>
+                            <stop offset="50%" stopColor="transparent"/>
+                          </linearGradient>
+                        </defs>
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.05 9.397c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.97z" fill="url(#half-grad)"/>
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.05 9.397c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.97z" fill="none" stroke="currentColor" strokeWidth="1"/>
+                      </svg>
+                    );
+                  }
+                  for (let i = 0; i < emptyStars; i++) {
+                    stars.push(
+                      <svg key={"empty"+i} className="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.05 9.397c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.97z"/></svg>
+                    );
+                  }
+                  return stars;
+                })()}
+              </div>
               <p className="mt-4 italic text-sm text-gray-700 text-center">{movies[movieindex].overview}</p>
             </div>
           </div>
