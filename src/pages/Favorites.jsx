@@ -11,7 +11,7 @@ function Favorites() {
 
   if (favorites.length > 0) {
     return (
-      <div className="">
+      <div className="h-screen ">
         <h1>Your Favorites</h1>
         <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
           {favorites.map((movie) => (
@@ -22,7 +22,7 @@ function Favorites() {
     );
   }
   return (
-    <div>
+    <div className="h-screen bg-red-500/20">
       <h1>Your Favorites</h1>
       <p>No favs yet</p>
     </div>

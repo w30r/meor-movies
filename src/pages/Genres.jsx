@@ -15,7 +15,7 @@ function Genres() {
   }, []);
 
   return (
-    <div>
+    <div className="h-screen ">
       <h1 className="mb-4">Genres</h1>
       <div className="grid text-white grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {genres.map((x) => (

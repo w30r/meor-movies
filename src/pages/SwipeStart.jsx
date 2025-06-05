@@ -1,15 +1,50 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getPopularMovies, likeAMovie } from "../services/api";
+import { getPopularMovies, likeAMovie, getUsersPage, listGenres } from "../services/api";
 
 function SwipeStart() {
   const { username } = useParams();
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState([]);
   const [movieindex, setMovieindex] = useState(0);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1); // Will be updated by backend on mount
   const [likedMovie, setLikedMovie] = useState([]);
   const [dislikedMovie, setDislikedMovie] = useState([]);
+  const [pageLoadError, setPageLoadError] = useState(null);
+  const [genreMap, setGenreMap] = useState({});
+
+  // Fetch last page for user on mount
+  useEffect(() => {
+    async function fetchUserPage() {
+      try {
+        const currPage = await getUsersPage(username);
+        console.log('[SwipeStart] Fetched currPage from server:', currPage);
+        if (currPage !== undefined && currPage !== null) {
+          setPage(currPage);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user page:", err);
+        setPageLoadError("Can't get the saved user's page, loading from page 1 instead");
+        setPage(1); // fallback
+      }
+    }
+    fetchUserPage();
+  }, [username]);
+
+  // Fetch genre map on mount
+  useEffect(() => {
+    async function fetchGenres() {
+      try {
+        const genres = await listGenres();
+        const map = {};
+        genres.forEach(g => { map[g.id] = g.name; });
+        setGenreMap(map);
+      } catch (err) {
+        setGenreMap({});
+      }
+    }
+    fetchGenres();
+  }, []);
 
   //
   function handleDislike() {
@@ -30,7 +65,7 @@ function SwipeStart() {
     setLikedMovie([...likedMovie, currentMovie.id]);
 
     try {
-      const result = await likeAMovie(currentMovie.id, username);
+      const result = await likeAMovie(currentMovie.id, username, page);
       if (result.match) {
         alert(
           `🎉 Match! You and ${result.matchedWith.join(", ")} both liked ${
@@ -52,10 +87,12 @@ function SwipeStart() {
   }
 
   useEffect(() => {
+    console.log('[SwipeStart] useEffect for page:', page);
     const loadMovies = async () => {
       try {
         setLoading(true);
         const data = await getPopularMovies(page);
+        console.log('[SwipeStart] Loaded movies for page', page, ':', data);
         setMovies(data);
       } catch (error) {
         console.log(error);
@@ -63,53 +100,68 @@ function SwipeStart() {
         setLoading(false);
       }
     };
-    loadMovies();
+    if (page !== undefined && page !== null) {
+      loadMovies();
+    }
   }, [page]);
 
   return (
-    <div className="flex flex-col items-center mx-auto max-w-md">
-      <h2 className="text-3xl font-bold">Start swiping, {username}!</h2>
+    <div className="w-full min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex flex-col px-2 pt-4 max-w-md mx-auto">
+      <h2 className="text-2xl font-bold text-center mb-2">Start swiping, {username}!</h2>
+      {pageLoadError && (
+        <p className="text-md text-red-600 mb-2 text-center">{pageLoadError}</p>
+      )}
       {loading ? (
-        <p className="text-xl">Loading...</p>
+        <p className="text-xl text-center">Loading...</p>
       ) : (
         <>
           <div
-            className="bg-no-repeat bg-center h-120 w-full mt-6 rounded-sm text-white flex items-center justify-center"
+            className="bg-no-repeat bg-center aspect-[2/3] w-full max-w-xs mx-auto mt-2 rounded-lg text-white flex items-end justify-center shadow-lg overflow-hidden"
             style={{
               backgroundImage: `url(https://image.tmdb.org/t/p/w500/${movies[movieindex].poster_path})`,
+              backgroundSize: 'cover',
             }}
           >
-            <p className="text-2xl drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.9)] bg-black/50 py-0.5 rounded-sm px-3 opacity-80">
+            <p className="text-lg drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.9)] bg-black/60 py-1 rounded-b-lg px-3 opacity-90 w-full text-center">
               {movies[movieindex].title}
             </p>
           </div>
-          <div className="flex justify-between w-full mt-6 gap-4">
-            <div
-              onClick={() => handleDislike()}
-              className="bg-red-400 h-12 w-1/2 rounded-sm outline-2 outline-black shadow-xl flex items-center justify-center"
+          <div className="flex w-full mt-4 gap-4">
+            <button
+              onClick={handleDislike}
+              className="bg-red-400 h-12 flex-1 rounded-lg outline-2 outline-black shadow-xl flex items-center justify-center text-2xl active:scale-95 transition"
+              aria-label="Dislike"
             >
               ❌
-            </div>
-            <div
-              onClick={() => handleLike()}
-              className="bg-green-400 h-12 w-1/2 rounded-sm outline-2 outline-black shadow-xl flex items-center justify-center"
+            </button>
+            <button
+              onClick={handleLike}
+              className="bg-green-400 h-12 flex-1 rounded-lg outline-2 outline-black shadow-xl flex items-center justify-center text-2xl active:scale-95 transition"
+              aria-label="Like"
             >
               ✅
-            </div>
+            </button>
           </div>
-          <p className="mt-4 text-2xl font-bold">Show Details</p>
-          <p className="font-bold">⬇⬇⬇</p>
+          <p className="mt-4 text-xl font-bold text-center">Show Details</p>
+          <p className="font-bold text-center">⬇⬇⬇</p>
           <div>
-            <div className="mt-4 p-4 bg-white/50 rounded-sm shadow-xl">
-              <p className="font-bold">
+            <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-xl">
+              <p className="font-bold text-lg text-center">
                 {movies[movieindex].title} (
                 {movies[movieindex].release_date?.slice(0, 4)})
               </p>
-              <p className="font-bold">
+              <div className="flex flex-wrap gap-2 justify-center my-2">
+                {movies[movieindex].genre_ids && movies[movieindex].genre_ids.map((gid) => (
+                  <span key={gid} className="inline-block bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full text-xs font-semibold shadow">
+                    {genreMap[gid] || gid}
+                  </span>
+                ))}
+              </div>
+              <p className="font-bold text-center">
                 Score: {Math.round(movies[movieindex].vote_average * 10) / 10}
                 /10
               </p>
-              <p className="mt-6 italic">{movies[movieindex].overview}</p>
+              <p className="mt-4 italic text-sm text-gray-700 text-center">{movies[movieindex].overview}</p>
             </div>
           </div>
         </>

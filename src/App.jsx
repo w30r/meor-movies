@@ -7,6 +7,7 @@ import { MovieProvider } from "./contexts/MovieContext";
 import Genres from "./pages/Genres";
 import SwipeLogin from "./pages/SwipeLogin";
 import SwipeStart from "./pages/SwipeStart";
+import Matches from "./pages/Matches";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <a href="/">Home</a>
         <a href="/favorites">Favorites</a>
         <a href="/genres">Genres</a>
+        <a href="/matches">Matches</a>
         <a href="/swipe-login">
           <p className="text-pink-500 font-bold hover:scale-110 transition-all duration-300 ease-in-out">
             Swipe
@@ -22,12 +24,13 @@ function App() {
         </a>
       </div>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/favorites" element={<Favorites />} />
-        <Route path="/genres" element={<Genres />} />
-        <Route path="/detail/:id" element={<MovieDetail />} />
-        <Route path="/swipe-login" element={<SwipeLogin />} />
-        <Route path="/swipe-start/:username" element={<SwipeStart />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/genres" element={<Genres />} />
+          <Route path="/detail/:id" element={<MovieDetail />} />
+          <Route path="/swipe-login" element={<SwipeLogin />} />
+          <Route path="/swipe-start/:username" element={<SwipeStart />} />
+          <Route path="/matches" element={<Matches />} />
       </Routes>
     </MovieProvider>
   );
