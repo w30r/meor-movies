@@ -1,7 +1,7 @@
 const API_KEY = "2a69af83e643fe243bc21a1cf7e652fc";
 const BASE_URL = "https://api.themoviedb.org/3";
-const SERVER_BASE_URL = "https://termination-webshots-vampire-flexible.trycloudflare.com";
-
+const SERVER_BASE_URL =
+  "https://instructional-producers-kathy-hrs.trycloudflare.com";
 
 export async function getUsersPage(username) {
   const response = await fetch(`${SERVER_BASE_URL}/pagefor/${username}`);
@@ -9,7 +9,7 @@ export async function getUsersPage(username) {
   return data.currPage;
 }
 
-export async function likeAMovie(movieId, username,currPage) {
+export async function likeAMovie(movieId, username, currPage) {
   const res = await fetch(`${SERVER_BASE_URL}/like`, {
     method: "POST",
     headers: { "Content-Type": `application/json` },
@@ -35,7 +35,11 @@ export const searchMovies = async (query) => {
 };
 
 export async function getMatches(user1, user2) {
-  const response = await fetch(`${SERVER_BASE_URL}/get-matches/${encodeURIComponent(user1)}/${encodeURIComponent(user2)}`);
+  const response = await fetch(
+    `${SERVER_BASE_URL}/get-matches/${encodeURIComponent(
+      user1
+    )}/${encodeURIComponent(user2)}`
+  );
   if (!response.ok) throw new Error("Failed to fetch matches");
   return response.json();
 }
